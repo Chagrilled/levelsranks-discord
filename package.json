@@ -1,0 +1,24 @@
+{
+  "name": "levelsranks-discord",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chagrilled/levelsranks-discord.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chagrilled/levelsranks-discord/issues"
+  },
+  "homepage": "https://github.com/Chagrilled/levelsranks-discord#readme",
+  "dependencies": {
+    "discord.js": "^12.2.0",
+    "mysql2": "^2.1.0"
+  }
+}
