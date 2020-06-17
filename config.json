@@ -8,5 +8,6 @@
         "database": "levels-ranks"
     },
     "topX": 10,
-    "commandPrefix": "!"
+    "commandPrefix": "!",
+    "steamAPIKey": ""
 }
