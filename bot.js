@@ -42,7 +42,7 @@ const Rank = async message => {
     const steam = message.content.match(/rank (STEAM_[0-9]:[0-9]:[0-9]+)/);
     if (!steam || !steam[1]) return message.reply(`Invalid Steam ID given\n**Usage:** ${PREFIX}rank STEAM_1:0:1234`);
     let sid = new steamID(steam[1]);
-
+    if (!sid.isValid()) return message.reply(`Invalid Steam ID given\n**Usage:** ${PREFIX}rank STEAM_1:0:1234`);
     profile = await steamAPI.getUserSummary(sid.getSteamID64());
 
     pool.getConnection((err, con) => {
