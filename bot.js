@@ -36,13 +36,14 @@ const Top = message => {
 };
 
 const Rank = async message => {
+    const usage = `**Usage:** ${PREFIX}rank STEAM_1:0:12345`;
     if (message.content == `${PREFIX}rank`)
-        return message.reply(`Displays stats for a user's Steam ID:\n**Usage:** ${PREFIX}rank STEAM_1:0:12345`);
+        return message.reply(`Displays stats for a user's Steam ID:\n${usage}`);
 
     const steam = message.content.match(/rank (STEAM_[0-9]:[0-9]:[0-9]+)/);
-    if (!steam || !steam[1]) return message.reply(`Invalid Steam ID given\n**Usage:** ${PREFIX}rank STEAM_1:0:1234`);
+    if (!steam || !steam[1]) return message.reply(`Invalid Steam ID given\n${usage}`);
     let sid = new steamID(steam[1]);
-    if (!sid.isValid()) return message.reply(`Invalid Steam ID given\n**Usage:** ${PREFIX}rank STEAM_1:0:1234`);
+    if (!sid.isValid()) return message.reply(`Invalid Steam ID given\n${usage}`);
     profile = await steamAPI.getUserSummary(sid.getSteamID64());
 
     pool.getConnection((err, con) => {
