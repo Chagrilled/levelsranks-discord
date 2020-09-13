@@ -36,23 +36,22 @@ const Top = message => {
 };
 
 const Rank = async message => {
-    const usage = `**Usage:** ${PREFIX}rank STEAM_1:0:12345`;
+    const usage = `**Usage:** ${PREFIX}rank <Steam user/ID>`;
     if (message.content == `${PREFIX}rank`)
         return message.reply(`Displays stats for a user's Steam ID:\n${usage}`);
 
-    const steam = message.content.match(/rank (STEAM_[0-9]:[0-9]:[0-9]+)/);
-    if (!steam || !steam[1]) return message.reply(`Invalid Steam ID given\n${usage}`);
-    let sid = new steamID(steam[1]);
-    if (!sid.isValid()) return message.reply(`Invalid Steam ID given\n${usage}`);
-    profile = await steamAPI.getUserSummary(sid.getSteamID64());
+    let steam = await GetSteam(message);
+    if (!steam) return message.reply('Invalid ID given.');
+
+    profile = await steamAPI.getUserSummary(steam.getSteamID64());
 
     pool.getConnection((err, con) => {
-        con.query(`SELECT name, value, rank, kills, deaths, headshots, hits, assists, round_win, round_lose, playtime FROM lvl_base WHERE steam = '${steam[1]}'`, (err, result) => {
+        con.query(`SELECT name, value, rank, kills, deaths, headshots, hits, assists, round_win, round_lose, playtime FROM lvl_base WHERE steam = '${steam.getSteam2RenderedID(true)}'`, (err, result) => {
 
             if (!result || result.length <= 0) 
             {
                 con.release();
-                return message.reply(`No results found for ${steam[1]}`);
+                return message.reply(`No results found for ${steam.getSteam2RenderedID(true)}`);
             }
             let embed = new Discord.MessageEmbed()
                 .setColor("40C0EF")
@@ -73,6 +72,33 @@ const Rank = async message => {
         });
     });
 };
+
+const GetSteam = async message => {
+
+	const steam = message.content.match(/((?:STEAM_[0-9]:[0-9]:[0-9]+)|(?:\[U:[0-9]:[0-9]+\])|(?:https?:\/\/steamcommunity\.com\/[^\s]+)|(?:[0-9]+)|(?:[a-zA-Z0-9]+$))/);
+    if (!steam || !steam[1]) return message.reply(`Invalid Steam ID given`);
+    
+    let id, sid;
+    if (steam[1].match(/^((?![0-9]+$)[a-zA-Z0-9]+)$/))
+    	steam[1] = `https://steamcommunity.com/id/${steam[1]}`;
+
+    if (steam[1].startsWith('http'))
+    	try {
+    		sid = new steamID(await steamAPI.resolve(steam[1]));
+    	}
+    	catch (e) {
+    		message.reply("No match for this ID");
+    		return false;
+    	}
+    else sid = new steamID(steam[1]);
+
+    if (!sid.isValid()) 
+    {
+    	message.reply(`Invalid Steam ID given`);
+    	return false;
+    } 
+    else return sid;
+}
 
 client.on('message', async message => {
     if (message.author === client.user) return;
