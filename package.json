@@ -1,6 +1,6 @@
 {
   "name": "levelsranks-discord",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Discord bot for use with level-ranks Sourcemod plugin",
   "main": "index.js",
   "scripts": {
